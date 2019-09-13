@@ -22,5 +22,6 @@ from .views import welcome
 urlpatterns = [
     path('admin/', admin.site.urls),
     re_path(r'\Awelcome', welcome),
-    re_path(r'\A\Z', welcome),
+    re_path(r'\A\Z', welcome)
+#    re_path(r'\A\Z', welcome),
 ]
