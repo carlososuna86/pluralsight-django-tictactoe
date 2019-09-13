@@ -1,0 +1,39 @@
+version: '3.7'
+
+services:
+  
+  web:
+    build:
+      context: ./web/
+      dockerfile: Dockerfile
+    command: bash init.sh
+    working_dir: /usr/local/django
+    volumes:
+      - type: bind
+        source: ./web
+        target: /usr/local/django
+    #ports:
+    #  - "80:80"
+    expose:
+      - 80
+    environment:
+      VIRTUAL_HOST: ${HOSTNAME:-127.0.0.1}
+    depends_on:
+      - db
+    networks:
+      django-backbone:
+      nginx-proxy:
+  
+  db:
+    image: postgres
+    volumes:
+      - type: bind
+        source: ./data/db
+        target: /var/lib/postgresql
+    networks:
+      django-backbone:
+
+networks:
+  django-backbone:
+  nginx-proxy:
+    external: true
