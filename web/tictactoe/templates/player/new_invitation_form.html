@@ -6,6 +6,7 @@ New Invitation
 
 {% block content %}
   <form method="POST" action="{% url 'player_new_invitation' %}">
+    {% csrf_token %}
     {{ form }}
     <button type="submit">Send the Invitation</button>
   </form>
