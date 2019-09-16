@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block title %}
+New Invitation
+{% endblock %}
+
+{% block content %}
+  <form method="POST" action="{% url 'player_new_invitation' %}">
+    {{ form }}
+    <button type="submit">Send the Invitation</button>
+  </form>
+{% endblock %}
