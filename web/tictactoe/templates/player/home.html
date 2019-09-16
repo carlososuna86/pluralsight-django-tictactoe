@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 {% load staticfiles %}
 
+{% block title %}
+Player Home
+{% endblock %}
+
 {% block content %}
   <h1>Welcome, {{ user.username }}</h1>
     These are your active games:
