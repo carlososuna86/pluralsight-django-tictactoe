@@ -40,7 +40,10 @@ def accept_invitation(request, id):
         second_player=invitation.from_user,
       )
     invitation.delete()
-    return redirect('player_home')
+    if game:
+      return redirect(game)
+    else:
+      return redirect('player_home')
   else:
     return render(request, 
                   "player/accept_invitation_form.html",
