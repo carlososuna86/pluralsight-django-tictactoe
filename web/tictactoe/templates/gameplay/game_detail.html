@@ -27,6 +27,21 @@
 
 {% block content %}
   <div class="col-md-5">
+
+    {% if game.status == 'F' %}
+      {{ game.first_player }}'s Turn
+    {% elif game.status == 'S' %}
+      {{ game.second_player }}'s Turn
+    {% elif game.status == 'W' %}
+      {{ game.first_player }} Won!
+    {% elif game.status == 'L' %}
+      {{ game.second_player }} Won!
+    {% elif game.status == 'D' %}
+      It's a Draw!
+    {% else %}
+      Unknown state
+    {% endif %}
+
     <table class="table table-bordered tictactoe-table">
     {% for row in game.board %}
       <tr>
