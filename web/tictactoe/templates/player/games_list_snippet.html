@@ -3,7 +3,7 @@
         
         <ul class="list-group">
         {% for game in games_list %}
-          <a class="list-group-item" href="{{ g.get_absolute_url }}">
+          <a class="list-group-item" href="{{ game.get_absolute_url }}">
             {{ game }}
             {% if game.status not in 'FS' %}
               {% if game.status == 'D' %}
