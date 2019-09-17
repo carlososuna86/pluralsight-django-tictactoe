@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load crispy_forms_tags %}
 {% load staticfiles %}
 
 {% block title %}
@@ -44,4 +45,15 @@
     {% endfor %}
     </table>
   </div>
+
+  {% if form %}
+  <div class="col-md-4">
+    <h3>It's your move</h3>
+    <form method="POST" action="">
+      {{ form | crispy }}
+      {% csrf_token %}
+      <button type="submit">Make move</button>
+    </form>
+  </div>
+  {% endif %}
 {% endblock content %}
