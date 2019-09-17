@@ -5,6 +5,7 @@ ROOT_DIR=$(pwd)
 F_VERSION=0
 F_INSTALL=0
 F_SERVE=0
+F_UWSGI=0
 
 P_HOST=0.0.0.0
 P_PORT=8000
@@ -21,6 +22,9 @@ parse_parameters() {
     case $param in
       serve)
         F_SERVE=1
+        ;;
+      uwsgi)
+        F_UWSGI=1
         ;;
       host)
         P_HOST="$2"
@@ -79,13 +83,36 @@ py_version() {
   pip3 freeze
 }
 
-py_serve() {
+py_wsgi() {
+  # If running WSGI, skip Development Server
+  F_SERVE=0
+
   local PROJ_DIR="./tictactoe"
   cd $PROJ_DIR
-  python3 manage.py runserver $1:$2
+  echo "> Serving the application in WSGI Mode"
+  uwsgi --socket "$1:$2" \
+        --uid uwsgi \
+        --plugins python3 \
+        --protocol uwsgi \
+        --wsgi main:application
+  # print new line, to clear the ^C in the output
+  echo ""
   cd $ROOT_DIR
 }
 
+py_serve() {
+  local PROJ_DIR="./tictactoe"
+  cd $PROJ_DIR
+  echo "> Serving the application"
+  python3 manage.py runserver $1:$2
+  # print new line, to clear the ^C in the output
+  echo ""
+  cd $ROOT_DIR
+}
+
+# ########################################################################### #
+#                                Script Execution                             #
+# ########################################################################### #
 clear
 parse_parameters $@
 py_env
@@ -98,11 +125,13 @@ if [[ $F_VERSION -eq 1 ]]; then
   py_version
 fi
 
+if [[ $F_UWSGI -eq 1 ]]; then
+  #py_wsgi $P_HOST $P_PORT
+  echo "WSGI functionality disabled"
+fi
+
 if [[ $F_SERVE -eq 1 ]]; then
-  echo "> Serving the application"
   py_serve $P_HOST $P_PORT
-  # print new line, to clear the ^C in the output
-  echo ""
 fi
 
 py_unenv
