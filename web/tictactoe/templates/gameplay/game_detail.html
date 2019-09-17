@@ -49,7 +49,7 @@
   {% if form %}
   <div class="col-md-4">
     <h3>It's your move</h3>
-    <form method="POST" action="">
+    <form method="POST" action="{% url 'gameplay_make_move' game.id %}">
       {{ form | crispy }}
       {% csrf_token %}
       <button type="submit">Make move</button>

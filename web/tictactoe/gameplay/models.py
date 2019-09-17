@@ -1,9 +1,10 @@
 from __future__ import unicode_literals
-from django.utils.encoding import python_2_unicode_compatible
+from django.contrib.auth.models import User
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.db.models import Q
-from django.contrib.auth.models import User
 from django.urls import reverse
+from django.utils.encoding import python_2_unicode_compatible
 
 GAME_STATUS_CHOICES = (
     ('F', 'First Player to Move'),
@@ -48,6 +49,16 @@ class Game(models.Model):
       return (user == self.first_player and self.status == 'F') or \
              (user == self.second_player and self.status == 'S')
 
+    def new_move(self):
+      """ Returns a new move object with player, game, and count preset
+      """
+      if self.status not in 'FS':
+        raise ValueError("Cannot make move on finished game")
+      return Move(
+        game= self,
+        by_first_player= self.status == 'F'
+      )
+
     def get_absolute_url(self):
       return reverse('gameplay_detail', args=[self.id])
 
@@ -60,8 +71,18 @@ class Game(models.Model):
 
 
 class Move(models.Model):
-    x = models.IntegerField()
-    y = models.IntegerField()
+    x = models.IntegerField(
+      validators= [
+        MinValueValidator(0), 
+        MaxValueValidator(BOARD_SIZE - 1)
+      ]
+    )
+    y = models.IntegerField(
+      validators= [
+        MinValueValidator(0), 
+        MaxValueValidator(BOARD_SIZE - 1)
+      ]
+    )
     comment = models.CharField(max_length=300, blank=True)
-    by_first_player = models.BooleanField(default=False)
+    by_first_player = models.BooleanField(default=False, editable=False)
     game = models.ForeignKey(Game, editable=False, on_delete=models.CASCADE)
