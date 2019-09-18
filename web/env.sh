@@ -4,6 +4,7 @@ ROOT_DIR=$(pwd)
 
 F_VERSION=0
 F_INSTALL=0
+F_BASH=0
 F_SERVE=0
 F_UWSGI=0
 
@@ -12,7 +13,6 @@ P_PORT=8000
 
 parse_parameters() {
   if [[ -z $1 ]]; then
-    F_INSTALL=0
     F_SERVE=1
   fi
 
@@ -33,6 +33,9 @@ parse_parameters() {
       port)
         P_PORT="$2"
         shift
+        ;;
+      bash)
+        F_BASH=1
         ;;
       version)
         F_VERSION=1
@@ -110,6 +113,11 @@ py_serve() {
   cd $ROOT_DIR
 }
 
+py_bash() {
+  echo "> Running bash in the Virtual Environment"
+  bash
+}
+
 # ########################################################################### #
 #                                Script Execution                             #
 # ########################################################################### #
@@ -132,6 +140,10 @@ fi
 
 if [[ $F_SERVE -eq 1 ]]; then
   py_serve $P_HOST $P_PORT
+fi
+
+if [[ $F_BASH -eq 1 ]]; then
+  py_bash
 fi
 
 py_unenv
